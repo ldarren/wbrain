@@ -1,0 +1,24 @@
+{
+  "name": "wbrain",
+  "version": "0.0.1",
+  "description": "A worm brain on the net",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ldarren/wbrain.git"
+  },
+  "keywords": [
+    "worm",
+    "brain",
+    "neuron"
+  ],
+  "author": "Darren Liew",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ldarren/wbrain/issues"
+  },
+  "homepage": "https://github.com/ldarren/wbrain"
+}
