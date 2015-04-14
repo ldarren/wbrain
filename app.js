@@ -77,7 +77,7 @@ function NeuronNetwork(layerSize, config){
             dw[j] = new Array(kl)
             wj = w[j]
             dwj = dw[j]
-            for(k=1; k<kl; k++){
+            for(k=0; k<kl; k++){
                 wj[k]=wrand(smallwt)
                 dwj[k]=0
             }
@@ -87,20 +87,51 @@ function NeuronNetwork(layerSize, config){
     this.eta = config.eta || 0.5
     this.alpha = config.alpha || 0.9
     this.layers = layers
+    this.layerSize = layerSize.slice()
     this.weights = weights
     this.dWeights = dWeights
 }
 
 NeuronNetwork.prototype = {
-    train: function(times, inputs, targets){
+    train: function(loop, inputs, targets){
         var
         ranpat = [],
-        i,l,x
+        layerSize = this.layerSize,
+        error,
+        i,l
 
         for(i=0,l=inputs.length; i<l; i++) ranpat[i]=i
-        for(l=inputs.length-1,i; l>-1; i=Floor(Random()*l), x=ranpat[l], ranpat[l]=ranpat[i], ranpat[i]=x, l--);
+
+        for(var epoch=0; epoch<loop; epoch++){
+            for(l=inputs.length-1,i; l>-1; i=Floor(Random()*l), p=ranpat[l], ranpat[l]=ranpat[i], ranpat[i]=p, l--);
+            error=0
+
+            for(i=0,l=ranpat.length; i<l; i++){
+                this.compute(inputs[ranpat[i]])
+            }
+        }
     },
     compute: function(inputs){
+        var
+        layers = this.layers,
+        layerSize = this.layerSize,
+        weights = this.weights,
+        outputs = [],
+        li,wi,lj,
+        i,l,j,jl,k,kl
+
+        for(i=0,l=layerSize.length-1; i<l; i++){
+            jl = layerSize[i+1]
+            kl = layerSize[i]
+            li=layers[1+(i*2)]
+            wi=weights[i]
+            for(j=1; j<jl; j++){
+                li[j]=wi[0]
+                for(k=1; k<kl; k++){
+                    li[j]+=wi[k]*
+                }
+            }
+        }
     },
     log: function(){
         console.log(JSON.stringify(this.inputs))
