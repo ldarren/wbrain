@@ -108,24 +108,28 @@ NeuralNetwork.prototype = {
 console.log('dLayers', dLayers)
 
                 // back-propagate
-                for(j=layerSize[layerSize.length-2]; j>1; j--){
+                for(j=layerSize.length-2; j; j--){
                     kl=layerSize[j-1]
                     ml=layerSize[j]
                     dl=dLayers[j]
                     dlj=dLayers[j-1]
                     ll=layers[j]
                     wj=weights[j]
+console.log('#################',weights)
 console.log(j, kl, ml, dl, dlj, ll, wj)
-break
+
                     for(k=1; k<kl; k++){ // lower 
                         wk=wj[k]
+console.log(wk)
                         t=0
                         for(m=1; m<ml; m++){ // upper 
                             t+=wk[m]*dl[m]
                         }
                         dlj[k]=t*ll[k]*(1-ll[k])
                     }
+console.log('dLayers'+k, dLayers)
                 }
+console.log('dLayers final', dLayers)
 
                 // update weights
                 for(j=0,jl=layerSize.length; j<jl; j++){
