@@ -1,6 +1,6 @@
 // dataset: https://archive.ics.uci.edu/ml/machine-learning-databases/iris/
 const
-IRIS_CLASS = {'Iris-setosa':1,'Iris-versicolor':2,'Iris-virginica':3}
+IRIS_CLASS = {'Iris-setosa':[1,0,0],'Iris-versicolor':[0,1,0],'Iris-virginica':[0,0,1]}
 
 var
 fs = require('fs'),
@@ -18,7 +18,7 @@ readDataSet = function(fpath, inputs, targets){
     for(var i=0,l=lines.length,arr; i<l; i++){
         arr = lines[i].split(',')
         if (!arr || 2>arr.length) break
-        targets.push([IRIS_CLASS[arr.splice(-1, 1)[0]]])
+        targets.push(IRIS_CLASS[arr.splice(-1, 1)[0]])
         inputs.push(arr.map(toNum))
     }
 },
@@ -27,9 +27,9 @@ targets = []
 
 readDataSet('data/bezdekIris.data', inputs, targets)
 
-var nn = new NeuralNetwork([inputs[0].length, 2, targets[0].length])
+var nn = new NeuralNetwork([inputs[0].length, 7, targets[0].length])
 //nn.learn(1, inputs, targets)
-console.log(nn.learn(1, [inputs[0]], [targets[0]]))
+console.log(nn.learn(100000, inputs, targets))
 fs.writeFileSync('./memory', JSON.stringify(nn.memory()))
 
 /*

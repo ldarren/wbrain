@@ -136,9 +136,8 @@ NeuralNetwork.prototype = {
                     for(k=1; k<kl; k++){ // upper
                         dwj=dw[k]
                         wk=wj[k]
-                        dwj[0] = eta*dl[k] + alpha*dwj[0]
-                        wk[0]+=dwj[0]
-                        for(m=1; m<ml; m++){ // lower
+
+                        for(m=0; m<ml; m++){ // lower
                             dwj[m] = eta*dl[k] + alpha*dwj[m]
                             wk[m]+=dwj[m]
                         }
