@@ -105,44 +105,37 @@ NeuralNetwork.prototype = {
                     error += sse(t-o)
                     dl[j+1]=dSSE(t, o)
                 }
-console.log('dLayers', dLayers)
 
                 // back-propagate
-                for(j=layerSize.length-2; j; j--){
+                for(j=layerSize.length-1; j; j--){
                     kl=layerSize[j-1]
                     ml=layerSize[j]
                     dl=dLayers[j]
                     dlj=dLayers[j-1]
                     ll=layers[j]
-                    wj=weights[j]
-console.log('#################',weights)
-console.log(j, kl, ml, dl, dlj, ll, wj)
+                    wj=weights[j-1]
 
                     for(k=1; k<kl; k++){ // lower 
-                        wk=wj[k]
-console.log(wk)
                         t=0
                         for(m=1; m<ml; m++){ // upper 
-                            t+=wk[m]*dl[m]
+                            wk=wj[m]
+                            t+=wk[k]*dl[m]
                         }
                         dlj[k]=t*ll[k]*(1-ll[k])
                     }
-console.log('dLayers'+k, dLayers)
                 }
-console.log('dLayers final', dLayers)
 
                 // update weights
-                for(j=0,jl=layerSize.length; j<jl; j++){
+                for(j=0,jl=layerSize.length-1; j<jl; j++){
                     kl=layerSize[j+1]
                     ml=layerSize[j]
-                    dw=dWeights[j+1]
-                    wj=weights[j+1]
-                    dl=dLayers[j+1]
-                    ll=layers[j+1]
+                    dw=dWeights[j]
+                    wj=weights[j]
+                    dl=dLayers[j]
+                    ll=layers[j]
                     for(k=1; k<kl; k++){ // upper
                         dwj=dw[k]
                         wk=wj[k]
-                        dlj=dj[k]
                         dwj[0] = eta*dl[k] + alpha*dwj[0]
                         wk[0]+=dwj[0]
                         for(m=1; m<ml; m++){ // lower
