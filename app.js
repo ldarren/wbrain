@@ -10,7 +10,7 @@ toNum = function(i){ return parseFloat(i, 10) },
 readDataSet = function(fpath, inputs, targets){
     inputs.length = 0
     targets.length = 0
-    var data = fs.readFileSync(path.isAbsolute(fpath) ? fpath : path.resolve(__dirname+path.sep+fpath), {encoding:'utf8'})
+    var data = fs.readFileSync(/*path.isAbsolute(fpath)*/0 ? fpath : path.resolve(__dirname+path.sep+fpath), {encoding:'utf8'})
     if (!data) throw 'given path ['+fpath+'] not found!'
 	var lines = data.split('\n')
     if (!lines || !lines.length) throw 'empty dataset?'
@@ -27,8 +27,8 @@ targets = []
 
 readDataSet('data/bezdekIris.data', inputs, targets)
 
-var nn = new NeuralNetwork([inputs[0].length, 7, targets[0].length])
-console.log(nn.learn(100000, inputs, targets))
+var nn = new NeuralNetwork([inputs[0].length, 3, targets[0].length])
+nn.learn(100000, inputs, targets)
 //console.log(nn.think(inputs[0]))
 fs.writeFileSync('./memory', JSON.stringify(nn.memory()))
 

@@ -97,7 +97,6 @@ NeuralNetwork.prototype = {
                 target = targets[idx]
                 output=this.think(inputs[idx])
                 dl=dLayers[layerSize.length-1]
-console.log(epoch, JSON.stringify(target),JSON.stringify(output))
                 for(j=0,jl=target.length; j<jl; j++){
                     t=target[j]
                     o=output[j]
@@ -121,7 +120,7 @@ console.log(epoch, JSON.stringify(target),JSON.stringify(output))
                             wk=wj[m]
                             t+=wk[k]*dl[m]
                         }
-                        dlj[k]=t*ll[k]*(1-ll[k])
+                        dlj[k]=t*derivative(ll[k])
                     }
                 }
                 // update weights
@@ -136,16 +135,14 @@ console.log(epoch, JSON.stringify(target),JSON.stringify(output))
                         dwj=dw[k]
                         wk=wj[k]
 
-                        dwj[0] = eta*dl[k] + alpha*dwj[0]
-                        wk[0] +=dwj[0]
-
-                        for(m=1; m<ml; m++){ // lower
+                        for(m=0; m<ml; m++){ // lower
                             dwj[m] = eta*ll[m]*dl[k] + alpha*dwj[m]
                             wk[m]+=dwj[m]
                         }
                     }
                 }
             }
+console.log(epoch, error, JSON.stringify(target),JSON.stringify(output))
             if (error < 0.0004) return error
         }
         return error
