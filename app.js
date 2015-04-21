@@ -28,8 +28,8 @@ targets = []
 readDataSet('data/bezdekIris.data', inputs, targets)
 
 var nn = new NeuralNetwork([inputs[0].length, 7, targets[0].length])
-//nn.learn(1, inputs, targets)
 console.log(nn.learn(100000, inputs, targets))
+//console.log(nn.think(inputs[0]))
 fs.writeFileSync('./memory', JSON.stringify(nn.memory()))
 
 /*

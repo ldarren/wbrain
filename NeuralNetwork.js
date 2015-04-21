@@ -42,7 +42,6 @@ NeuralNetwork.prototype = {
             jl = size[i]+1
             layerSize[i] = jl
             layers.push(new Array(jl))
-            layers.push(new Array(jl))
             dLayers.push(new Array(jl))
         }
 
@@ -97,8 +96,8 @@ NeuralNetwork.prototype = {
                 idx=ranpat[i]
                 target = targets[idx]
                 output=this.think(inputs[idx])
-
                 dl=dLayers[layerSize.length-1]
+console.log(epoch, JSON.stringify(target),JSON.stringify(output))
                 for(j=0,jl=target.length; j<jl; j++){
                     t=target[j]
                     o=output[j]
@@ -112,11 +111,12 @@ NeuralNetwork.prototype = {
                     ml=layerSize[j]
                     dl=dLayers[j]
                     dlj=dLayers[j-1]
-                    ll=layers[j]
+                    ll=layers[j-1]
                     wj=weights[j-1]
 
                     for(k=1; k<kl; k++){ // lower 
                         t=0
+
                         for(m=1; m<ml; m++){ // upper 
                             wk=wj[m]
                             t+=wk[k]*dl[m]
@@ -124,21 +124,23 @@ NeuralNetwork.prototype = {
                         dlj[k]=t*ll[k]*(1-ll[k])
                     }
                 }
-
                 // update weights
                 for(j=0,jl=layerSize.length-1; j<jl; j++){
                     kl=layerSize[j+1]
                     ml=layerSize[j]
                     dw=dWeights[j]
                     wj=weights[j]
-                    dl=dLayers[j]
+                    dl=dLayers[j+1]
                     ll=layers[j]
                     for(k=1; k<kl; k++){ // upper
                         dwj=dw[k]
                         wk=wj[k]
 
-                        for(m=0; m<ml; m++){ // lower
-                            dwj[m] = eta*dl[k] + alpha*dwj[m]
+                        dwj[0] = eta*dl[k] + alpha*dwj[0]
+                        wk[0] +=dwj[0]
+
+                        for(m=1; m<ml; m++){ // lower
+                            dwj[m] = eta*ll[m]*dl[k] + alpha*dwj[m]
                             wk[m]+=dwj[m]
                         }
                     }
@@ -157,27 +159,23 @@ NeuralNetwork.prototype = {
         i,l,j,jl,k,kl
 
         li = layers[0]
-        for(i=0,l=input.length; i<l; i++) li[i+1] = input[i]
-
-        lo = layers[1]
-        // apply input filter here
-        for(i=0,l=li.length; i<l; i++) lo[i] = filter && filter[i-1] ? filter[i-1]*li[i] : li[i]
+        li[0]=1
+        for(i=0,l=input.length; i<l; i++) li[i+1] = filter ? filter[i]*input[i] : input[i]
 
         for(i=0,l=layerSize.length-1; i<l; i++){
             jl = layerSize[i+1]
             kl = layerSize[i]
-            li=layers[1+(i*2)]
-            lo=layers[(i+1)*2]
-            loo=layers[1+((i+1)*2)]
+            li=layers[i]
+            lo=layers[i+1]
             wi=weights[i]
-            li[0]=1//first node is always 1
+            lo[0]=1//first node is always 1
             for(j=1; j<jl; j++){
                 wj=wi[j]
-                lo[j]=0
+                loo=0
                 for(k=0; k<kl; k++){
-                    lo[j]+=wj[k]*li[k]
+                    loo+=wj[k]*li[k]
                 }
-                loo[j] = sigmoid(lo[j])
+                lo[j] = sigmoid(loo)
             }
         }
         return layers[layers.length-1].slice(1)
