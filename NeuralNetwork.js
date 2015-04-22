@@ -145,8 +145,8 @@ NeuralNetwork.prototype = {
                     }
                 }
             }
-console.log(e, error, JSON.stringify(target),JSON.stringify(output))
-            if (error < 0.0004) return error
+console.log(e, error/l, JSON.stringify(target),JSON.stringify(output))
+            if (error/l < 0.0004) return error
         }
         return error
     },
