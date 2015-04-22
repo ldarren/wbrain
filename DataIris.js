@@ -5,9 +5,9 @@ IRIS_CLASS = {'Iris-setosa':[1,0,0],'Iris-versicolor':[0,1,0],'Iris-virginica':[
 var
 fs = require('fs'),
 path = require('path'),
-NeuralNetwork = require('./NeuralNetwork'),
-toNum = function(i){ return parseFloat(i, 10) },
-readDataSet = function(fpath, inputs, targets){
+toNum = function(i){ return parseFloat(i, 10) }
+
+exports.read = function(fpath, inputs, targets){
     inputs.length = 0
     targets.length = 0
     var data = fs.readFileSync(/*path.isAbsolute(fpath)*/0 ? fpath : path.resolve(__dirname+path.sep+fpath), {encoding:'utf8'})
@@ -21,22 +21,4 @@ readDataSet = function(fpath, inputs, targets){
         targets.push(IRIS_CLASS[arr.splice(-1, 1)[0]])
         inputs.push(arr.map(toNum))
     }
-},
-inputs = [],
-targets = [],
-epochs = process.argv[2] || 2000,
-eta = process.argv[3] || 0.05,
-alpha = process.argv[4] || 0.01
-
-readDataSet('data/bezdekIris.data', inputs, targets)
-
-var nn = new NeuralNetwork([inputs[0].length, 3, targets[0].length], {eta:eta,alpha:alpha})
-nn.learn(epochs, inputs, targets)
-//console.log(nn.think(inputs[0]))
-fs.writeFileSync('./memory', JSON.stringify(nn.memory()))
-
-/*
-var nn = new NeuralNetwork(JSON.parse(fs.readFileSync('./memory',{encoding:'utf8'})))
-//nn.learn(1, inputs, targets)
-console.log(nn.think(inputs[0]))
-*/
+}

@@ -1,5 +1,7 @@
-// ref: http://www.cs.bham.ac.uk/~jxb/NN/nn.html
-// http://visualstudiomagazine.com/articles/2013/09/01/neural-network-training-using-back-propagation.aspx
+// Ref: 
+// http://www.cs.bham.ac.uk/~jxb/NN/nn.html
+// http://visualstudiomagazine.com/Articles/2013/09/01/Neural-Network-Training-Using-Back-Propagation.aspx?p=1
+// http://visualstudiomagazine.com/Articles/2013/12/01/Neural-Network-Training-Using-Particle-Swarm-Optimization.aspx?p=1
 const
 E = Math.E,
 Pow = Math.pow,
@@ -10,7 +12,7 @@ Log = Math.log
 var
 sigmoid = function(i){ return 1/(1+Pow(E, -i)) },
 derivative = function(s){ return s*(1-s) },
-wrand = function(smallwt){ return 2 * (Random()-0.5) * smallwt },
+wrand = function(s){ return 2 * (Random()-0.5) * s},
 sse = function(d){return 0.5*d*d}, // sum square error, d = target-output
 cee = function(t, o){return t*Log(o)+((1-t)*Log(1-o))}, // cross entropy error
 dSSE = function(t, o){return (t-o)*o*(1-o)},
