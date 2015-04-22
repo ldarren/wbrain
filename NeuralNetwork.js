@@ -1,4 +1,5 @@
 // ref: http://www.cs.bham.ac.uk/~jxb/NN/nn.html
+// http://visualstudiomagazine.com/articles/2013/09/01/neural-network-training-using-back-propagation.aspx
 const
 E = Math.E,
 Pow = Math.pow,
@@ -73,7 +74,7 @@ NeuralNetwork.prototype = {
         this.weights = weights
         this.dWeights = dWeights
     },
-    learn: function(loop, inputs, targets){
+    learn: function(epochs, inputs, targets){
         var
         ranpat = [],
         layerSize = this.layerSize,
@@ -88,7 +89,7 @@ NeuralNetwork.prototype = {
 
         for(i=0,l=inputs.length; i<l; i++) ranpat[i]=i
 
-        for(var epoch=0; epoch<loop; epoch++){
+        for(var e=0; e<epochs; e++){
             for(l=inputs.length; l; l--, i=Floor(Random()*l), p=ranpat[l], ranpat[l]=ranpat[i], ranpat[i]=p);
             error=0
 
@@ -142,7 +143,7 @@ NeuralNetwork.prototype = {
                     }
                 }
             }
-console.log(epoch, error, JSON.stringify(target),JSON.stringify(output))
+console.log(e, error, JSON.stringify(target),JSON.stringify(output))
             if (error < 0.0004) return error
         }
         return error

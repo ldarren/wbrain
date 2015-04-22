@@ -23,12 +23,15 @@ readDataSet = function(fpath, inputs, targets){
     }
 },
 inputs = [],
-targets = []
+targets = [],
+epochs = process.argv[2] || 2000,
+eta = process.argv[3] || 0.05,
+alpha = process.argv[4] || 0.01
 
 readDataSet('data/bezdekIris.data', inputs, targets)
 
-var nn = new NeuralNetwork([inputs[0].length, 3, targets[0].length])
-nn.learn(100000, inputs, targets)
+var nn = new NeuralNetwork([inputs[0].length, 3, targets[0].length], {eta:eta,alpha:alpha})
+nn.learn(epochs, inputs, targets)
 //console.log(nn.think(inputs[0]))
 fs.writeFileSync('./memory', JSON.stringify(nn.memory()))
 
