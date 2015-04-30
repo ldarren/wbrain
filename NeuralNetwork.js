@@ -25,6 +25,62 @@ NeuralNetwork = function(arg){
     }else{
         this.recall.apply(this, arguments)
     }
+},
+backPropagate = function(output, target, layerSize, layers, dLayers, weights){
+    var
+    e = 0,
+    t,o,
+    j,jl,k,kl,m,ml,
+    dlj,dli,li,wi,wik
+    
+    dlj=dLayers[layerSize.length-1]
+    for(k=0,kl=target.length; k<kl; k++){
+        t=target[k]
+        o=output[k]
+        e += sse(t-o)
+        dlj[k+1]=dSSE(t, o)
+    }
+
+    for(j=layerSize.length-1; j; j--){
+        kl=layerSize[j-1]
+        ml=layerSize[j]
+        dlj=dLayers[j]
+        dli=dLayers[j-1]
+        li=layers[j-1]
+        wi=weights[j-1]
+
+        for(m=1; m<ml; m++){ // lower 
+            t=0
+
+            for(k=1; k<kl; k++){ // upper 
+                wik=wi[k]
+                t+=wik[m]*dlj[k]
+            }
+            dli[m]=t*derivative(li[m])
+        }
+    }
+console.log(e, JSON.stringify(target),JSON.stringify(output))
+    return e
+},
+updateWeights = function(eta, alpha, layerSize, layers, dLayers, weights, dWeights){
+    var k,kl,m,ml,wj,dwj,lj,dlj,dwjk,wjk
+    for(var j=0,jl=layerSize.length-1; j<jl; j++){
+        kl=layerSize[j+1]
+        ml=layerSize[j]
+        dwj=dWeights[j]
+        wj=weights[j]
+        dlj=dLayers[j+1]
+        lj=layers[j]
+        for(k=1; k<kl; k++){ // upper
+            dwjk=dwj[k]
+            wjk=wj[k]
+
+            for(m=0; m<ml; m++){ // lower
+                dwjk[m] = eta*lj[m]*dlj[k] + alpha*dwjk[m]
+                wjk[m]+=dwjk[m]
+            }
+        }
+    }
 }
 
 NeuralNetwork.prototype = {
@@ -86,8 +142,8 @@ NeuralNetwork.prototype = {
         dWeights = this.dWeights,
         eta = this.eta,
         alpha = this.alpha,
-        idx,error,target,output,
-        i,l,p,j,jl,k,kl,m,ml,wj,wk,dl,dl,dw,dwj,ll,t,o
+        idx,error,
+        i,l,p
 
         for(i=0,l=inputs.length; i<l; i++) ranpat[i]=i
 
@@ -97,55 +153,10 @@ NeuralNetwork.prototype = {
 
             for(i=0,l=ranpat.length; i<l; i++){
                 idx=ranpat[i]
-                target = targets[idx]
-                output=this.think(inputs[idx])
-                dl=dLayers[layerSize.length-1]
-                for(j=0,jl=target.length; j<jl; j++){
-                    t=target[j]
-                    o=output[j]
-                    error += sse(t-o)
-                    dl[j+1]=dSSE(t, o)
-                }
-
-                // back-propagate
-                for(j=layerSize.length-1; j; j--){
-                    kl=layerSize[j-1]
-                    ml=layerSize[j]
-                    dl=dLayers[j]
-                    dlj=dLayers[j-1]
-                    ll=layers[j-1]
-                    wj=weights[j-1]
-
-                    for(k=1; k<kl; k++){ // lower 
-                        t=0
-
-                        for(m=1; m<ml; m++){ // upper 
-                            wk=wj[m]
-                            t+=wk[k]*dl[m]
-                        }
-                        dlj[k]=t*derivative(ll[k])
-                    }
-                }
-                // update weights
-                for(j=0,jl=layerSize.length-1; j<jl; j++){
-                    kl=layerSize[j+1]
-                    ml=layerSize[j]
-                    dw=dWeights[j]
-                    wj=weights[j]
-                    dl=dLayers[j+1]
-                    ll=layers[j]
-                    for(k=1; k<kl; k++){ // upper
-                        dwj=dw[k]
-                        wk=wj[k]
-
-                        for(m=0; m<ml; m++){ // lower
-                            dwj[m] = eta*ll[m]*dl[k] + alpha*dwj[m]
-                            wk[m]+=dwj[m]
-                        }
-                    }
-                }
+                
+                error += backPropagate(this.think(inputs[idx]), targets[idx], layerSize, layers, dLayers, weights)
+                updateWeights(eta, alpha, layerSize, layers, dLayers, weights, dWeights)                
             }
-console.log(e, error/l, JSON.stringify(target),JSON.stringify(output))
             if (error/l < 0.0004) return error
         }
         return error
