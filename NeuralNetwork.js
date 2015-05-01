@@ -42,8 +42,8 @@ backPropagate = function(output, target, layerSize, layers, dLayers, weights){
     }
 
     for(j=layerSize.length-1; j; j--){
-        kl=layerSize[j-1]
-        ml=layerSize[j]
+        ml=layerSize[j-1]
+        kl=layerSize[j]
         dlj=dLayers[j]
         dli=dLayers[j-1]
         li=layers[j-1]
