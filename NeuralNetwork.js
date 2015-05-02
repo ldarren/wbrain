@@ -124,15 +124,13 @@ NeuralNetwork.prototype = {
             }
         }
 
-        this.eta = config.eta || 0.5
-        this.alpha = config.alpha || 0.9
         this.layerSize = layerSize.slice()
         this.layers = layers
         this.dLayers = dLayers
         this.weights = weights
         this.dWeights = dWeights
     },
-    learn: function(epochs, inputs, targets){
+    learn: function(epochs, inputs, targets, config){
         var
         ranpat = [],
         layerSize = this.layerSize,
@@ -140,8 +138,8 @@ NeuralNetwork.prototype = {
         dLayers = this.dLayers,
         weights = this.weights,
         dWeights = this.dWeights,
-        eta = this.eta,
-        alpha = this.alpha,
+        eta = config.eta || 0.5,
+        alpha = config.alpha || 0.9,
         idx,error,
         i,l,p
 
@@ -193,8 +191,6 @@ NeuralNetwork.prototype = {
     },
     memory: function(){
         return {
-            eta: this.eta,
-            alpha: this.alpha,
             layerSize: this.layerSize,
             layers: this.layers,
             dLayers: this.dLayers,
@@ -203,8 +199,6 @@ NeuralNetwork.prototype = {
         }
     },
     recall: function(memory){
-        this.eta = memory.eta
-        this.alpha = memory.alpha
         this.layerSize = memory.layerSize
         this.layers = memory.layers
         this.dLayers = memory.dLayers
